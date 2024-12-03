@@ -1,6 +1,6 @@
 import sys
 
-from PyQt6.QtWidgets import QApplication, QVBoxLayout, QLabel, \
+from PyQt6.QtWidgets import QApplication, QLabel, \
     QWidget, QGridLayout, QLineEdit, QPushButton
 
 from datetime import datetime
