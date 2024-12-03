@@ -1,5 +1,6 @@
 import sys
 from fileinput import close
+from idlelib.search import SearchDialog
 
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QApplication, QLabel, \
@@ -9,7 +10,6 @@ from PyQt6.QtWidgets import QApplication, QLabel, \
 import sqlite3
 
 
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -17,10 +17,15 @@ class MainWindow(QMainWindow):
 
         file_menu_item = self.menuBar().addMenu("&File")
         help_menu_item = self.menuBar().addMenu("&Help")
+        edit_menu_item = self.menuBar().addMenu("&Edit")
 
         add_student_action = QAction("Add Student", self)
         add_student_action.triggered.connect(self.insert)
         file_menu_item.addAction(add_student_action)
+
+        add_search_action = QAction("Search", self)
+        add_search_action.triggered.connect(self.search)
+        edit_menu_item.addAction(add_search_action)
 
         about_action = QAction("About", self)
         help_menu_item.addAction(about_action)
@@ -30,8 +35,6 @@ class MainWindow(QMainWindow):
         self.table.setHorizontalHeaderLabels(("Id", "Name", "Course", "Mobile"))
         self.table.verticalHeader().setVisible(False)
         self.setCentralWidget(self.table)
-
-
 
     def load_data(self):
         connect = sqlite3.connect("database.db")
@@ -47,12 +50,41 @@ class MainWindow(QMainWindow):
         dialog = InsertDialog()
         dialog.exec()
 
+    def search(self):
+        dialog = SearchStudentDialog()
+        dialog.exec()
+
+
+class SearchStudentDialog(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Search Student ")
+        self.setFixedWidth(300)
+        self.setFixedHeight(300)
+
+        layout = QVBoxLayout()
+
+        # Add student name widget
+        self.student_name = QLineEdit()
+        self.student_name.setPlaceholderText("Name")
+        layout.addWidget(self.student_name)
+
+        button = QPushButton("Search")
+        button.clicked.connect(self.search_student)
+        layout.addWidget(button)
+
+        self.setLayout(layout)
+
+    def search_student(self):
+        pass
+
+
 
 
 class InsertDialog(QDialog):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Insert Sudent Data")
+        self.setWindowTitle("Insert Student Data")
         self.setFixedWidth(300)
         self.setFixedHeight(300)
 
@@ -92,17 +124,13 @@ class InsertDialog(QDialog):
         connection.commit()
         cursor.close()
         connection.close()
-        student_management.load_data()
-
-
-
-
+        main_window.load_data()
 
 
 
 
 app = QApplication(sys.argv)
-student_management = MainWindow()
-student_management.load_data()
-student_management.show()
+main_window = MainWindow()
+main_window.load_data()
+main_window.show()
 sys.exit(app.exec())
