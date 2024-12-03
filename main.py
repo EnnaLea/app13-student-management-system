@@ -8,7 +8,6 @@ from PyQt6.QtWidgets import QApplication, QLabel, \
 
 import sqlite3
 
-from setuptools.extern import names
 
 
 class MainWindow(QMainWindow):
